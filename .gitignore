@@ -1,0 +1,47 @@
+# R-VPCL-LL-S17-01 mandatory entries (secrets)
+.env
+.env.local
+.env.*.local
+.env.production
+*.pem
+*.key
+secrets/
+**/secrets/
+
+# Node / Build
+node_modules/
+dist/
+build/
+.next/
+.nx/
+.cache/
+.turbo/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test
+coverage/
+*.lcov
+.nyc_output/
+
+# Misc
+.pnpm-store/
