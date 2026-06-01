@@ -1,0 +1,25 @@
+{
+  "name": "@vertex/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vertex design tokens: HSL CSS vars + brand colors + severity scale + dark mode + multi-tenant override",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens.css": "./src/tokens.css"
+  },
+  "files": ["dist", "src/tokens.css"],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,49 @@
+/* @vertex/tokens — HSL design tokens (Design_System_Spec_v1.0 §5) */
+:root {
+  /* Brand Vertex (PMI lift) */
+  --vtx-brand-primary: 210 75% 21%;       /* #0B3B5C navy */
+  --vtx-brand-accent:  198 67% 47%;       /* steel blue */
+  --vtx-brand-bg:      0 0% 100%;         /* white */
+  --vtx-brand-fg:      210 75% 12%;       /* deep navy text */
+
+  /* Severity scale 5-level (Design_System_Spec_v1.0 §5) */
+  --vtx-sev-critical:  0 84% 50%;         /* red */
+  --vtx-sev-high:      24 95% 53%;        /* orange */
+  --vtx-sev-medium:    45 96% 50%;        /* amber */
+  --vtx-sev-low:       142 71% 45%;       /* green */
+  --vtx-sev-info:      210 75% 21%;       /* navy info */
+
+  /* Surface */
+  --vtx-surface:       0 0% 100%;
+  --vtx-surface-2:     210 17% 96%;
+  --vtx-border:        210 15% 88%;
+  --vtx-muted:         210 12% 50%;
+
+  /* Radius + spacing */
+  --vtx-radius-sm: 0.25rem;
+  --vtx-radius-md: 0.5rem;
+  --vtx-radius-lg: 0.75rem;
+
+  --vtx-spacing-1: 0.25rem;
+  --vtx-spacing-2: 0.5rem;
+  --vtx-spacing-3: 0.75rem;
+  --vtx-spacing-4: 1rem;
+  --vtx-spacing-6: 1.5rem;
+  --vtx-spacing-8: 2rem;
+}
+
+[data-theme="dark"] {
+  --vtx-brand-bg:      210 75% 8%;
+  --vtx-brand-fg:      0 0% 95%;
+  --vtx-surface:       210 50% 12%;
+  --vtx-surface-2:     210 40% 18%;
+  --vtx-border:        210 25% 28%;
+  --vtx-muted:         210 12% 65%;
+}
+
+/* Multi-tenant brand override (Design_System_Spec_v1.0 §5 Q-DS-S17-08 default CSS var data-tenant) */
+[data-tenant="default"] { /* inherit :root */ }
+[data-tenant="mediolanum"] {
+  --vtx-brand-primary: 215 85% 25%;
+  --vtx-brand-accent:  45 95% 50%;
+}

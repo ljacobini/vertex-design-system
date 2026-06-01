@@ -1,0 +1,27 @@
+{
+  "name": "@vertex/auth-pattern",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Vertex Auth.js v5 portable patterns: JWT helpers + SSO flow + tenant context.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "next-auth": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}
