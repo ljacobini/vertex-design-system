@@ -1,23 +1,23 @@
 /**
- * @vertex/api-client — public API
+ * @vertex/api-client -- public API surface
  *
- * S18 status: SKELETON. Full lift from vertex-platform/packages/api-client/ deferred S19.
+ * Lifted from ljacobini/vertex-platform PMI commit 6cedd1b (S53 W2).
+ * Design System Spec v1.0 sec.7: openapi-fetch typed HTTP client + tenant injection middleware.
  *
- * Planned (Design_System_Spec_v1.0 §7):
- *   - createClient<paths>({ baseUrl, fetch, tenantId })
- *   - Tenant header injection (X-Tenant-ID)
- *   - JWT auth bearer interceptor
- *   - Retry policy (3 attempts, exp backoff)
- *   - Error normalization (VtxApiError)
+ * ADR-002 backend stack: FastAPI exposes OpenAPI 3.1; consumer TS via openapi-typescript + openapi-fetch.
+ * ADR-004 multi-tenant: every request propagates `Authorization: Bearer <jwt>` + `X-Tenant-Id` headers.
  *
- * Q-DS-S17-04 (S20 cutoff): 2 client distinti — @vertex/api-client-pmi + @vertex/api-client-saas.
- * S18 W1: keep single skeleton, fork S20.
+ * Q-DS-S17-04 (S20 cutoff): 2 separate clients -- @vertex/api-client-pmi + @vertex/api-client-saas.
+ * S19 W3: single lifted client, fork S20.
  */
 
-export interface VtxClientConfig {
-  baseUrl: string;
-  tenantId: string;
-  getToken?: () => Promise<string | null>;
-}
+export {
+  createApiClient,
+  type ApiClient,
+  type ApiClientOptions,
+  type TokenProvider,
+} from './client';
 
-export const __vertex_api_client_skeleton__ = "0.1.0";
+export { fetchWithTenant, buildTenantHeaders } from './lib/fetch-with-tenant';
+
+export type { paths, components } from './types/openapi';

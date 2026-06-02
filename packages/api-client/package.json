@@ -2,23 +2,49 @@
   "name": "@vertex/api-client",
   "version": "0.1.0",
   "private": true,
-  "description": "Vertex typed API client: openapi-fetch + tenant injection + retry + error handling.",
+  "description": "Vertex Shared Design System -- Typed HTTP client (openapi-fetch + tenant injection middleware). Lifted from ljacobini/vertex-platform PMI commit 6cedd1b (S53 W2).",
+  "license": "UNLICENSED",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./types": {
+      "types": "./dist/types/openapi.d.ts",
+      "import": "./dist/types/openapi.js",
+      "require": "./dist/types/openapi.cjs"
     }
   },
-  "files": ["dist"],
   "scripts": {
-    "build": "tsc",
-    "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "gen:types": "openapi-typescript ${OPENAPI_URL:-http://localhost:8000/openapi.json} -o src/types/openapi.ts",
+    "gen:types:file": "openapi-typescript ${OPENAPI_SPEC_FILE:-../../apps/api/openapi.json} -o src/types/openapi.ts",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint 'src/**/*.ts'",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.10.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.4.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.0"
+    "openapi-typescript": "^7.4.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.4.0",
+    "rimraf": "^6.0.1",
+    "eslint": "^9.18.0"
   }
 }
