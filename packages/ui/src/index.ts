@@ -1,16 +1,85 @@
 /**
- * @vertex/ui — public API
+ * @vertex/ui - public API surface
  *
- * S18 status: SKELETON. Full lift from vertex-platform/packages/ui/ deferred S19.
+ * Vertex Shared Design System -- shadcn/Radix components + VTX brand tokens.
+ * Lifted from ljacobini/vertex-platform PMI commit 6cedd1b (S53 W2 Phase 5.1+5.2).
  *
- * Planned exports (Design_System_Spec_v1.0 §6):
- *   Lift from PMI (12): Button, Card, Form, Layout, Dialog, Toast, Tooltip,
- *                       Tabs, Select, Input, Textarea, Badge
- *   Net-new SAAS (4):   AuditChainViz, TenantSwitcher, Sidebar, NotificationBell
+ * Components (12):
+ *   M2 baseline: Button, Card, Input
+ *   S45 W2: Dialog, Table
+ *   S46 W3: Textarea, Badge, Label, Checkbox, RadioGroup, Select
+ *   S46 W4: Form (RHF wrapper)
  */
 
-// Placeholder export — replaced S19 Wave 2.
-export const __vertex_ui_skeleton__ = "0.1.0";
+/* M2 baseline */
+export { Button, buttonVariants, type ButtonProps } from './components/button';
+export {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from './components/card';
+export { Input, type InputProps } from './components/input';
 
-// Re-export tokens types for convenience
-export type { SeverityLevel, TenantId } from "@vertex/tokens";
+/* S45 W2 Vertex Platform Unified Design Language additions */
+export {
+  Dialog,
+  DialogTrigger,
+  DialogPortal,
+  DialogOverlay,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from './components/dialog';
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+} from './components/table';
+
+/* S46 W3 primitives extend */
+export { Textarea, type TextareaProps } from './components/textarea';
+export { Badge, badgeVariants, type BadgeProps } from './components/badge';
+export { Label } from './components/label';
+export { Checkbox } from './components/checkbox';
+export { RadioGroup, RadioGroupItem } from './components/radio';
+export {
+  Select,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
+} from './components/select';
+
+/* S46 W4 React Hook Form wrapper */
+export {
+  useFormField,
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+  FormField,
+} from './components/form';
+
+/* Utilities */
+export { cn } from './lib/utils';
+
+/* Re-export tokens types for convenience */
+export type { SeverityLevel, TenantId } from '@vertex/tokens';
