@@ -78,6 +78,19 @@ export {
   FormField,
 } from './components/form';
 
+/* S26 A3 — application shell (premium): app frame, role-gated nav, dashboard tiles, agent catalog */
+export { AppShell, type AppShellProps } from './components/app-shell';
+export { Sidebar, type SidebarProps, type SidebarNavItem } from './components/sidebar';
+export { TopBar, type TopBarProps } from './components/top-bar';
+export { PageHeader, type PageHeaderProps } from './components/page-header';
+export { StatCard, type StatCardProps } from './components/stat-card';
+export { AgentCard, type AgentCardProps } from './components/agent-card';
+export {
+  DataTable,
+  type DataTableColumn,
+  type DataTableProps,
+} from './components/data-table';
+
 /* Utilities */
 export { cn } from './lib/utils';
 

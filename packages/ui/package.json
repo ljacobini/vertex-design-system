@@ -1,8 +1,8 @@
 {
   "name": "@vertex/ui",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
-  "description": "Vertex Shared Design System -- UI components shadcn/Radix with brand institutional banking blue #0B3B5C. Lifted from PMI commit 6cedd1b.",
+  "description": "Vertex Shared Design System -- UI components shadcn/Radix with brand institutional banking blue #0B3B5C. v0.4.0 (S26 A3): premium app-shell (AppShell, role-gated Sidebar, TopBar, PageHeader, StatCard, AgentCard, DataTable).",
   "license": "UNLICENSED",
   "type": "module",
   "main": "./src/index.ts",
