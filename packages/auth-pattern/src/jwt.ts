@@ -35,7 +35,7 @@ export async function verifyVtxToken(token: string, secret: string): Promise<Vtx
   if (!token) {
     return { ok: false, reason: "missing_token", message: "Bearer token assente." };
   }
-  return verifyWith(token, hsKey(secret), [ALG_HS256]);
+  return verifyWith(token, hsKey(secret) as unknown as Parameters<typeof jwtVerify>[1], [ALG_HS256]);
 }
 
 /**
