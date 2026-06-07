@@ -52,7 +52,7 @@ export function createVertexAuthConfig(opts: VertexAuthOptions): NextAuthConfig 
         // On first sign-in `user` is the object returned by the provider's
         // authorize(): it must expose tenant_id + role (Vertex contract).
         if (user) {
-          const u = user as Record<string, unknown>;
+          const u = user as unknown as Record<string, unknown>;
           if (typeof u.tenant_id === "string") token.tenant_id = u.tenant_id;
           if (u.role !== undefined) token.role = coerceRole(u.role);
         }
@@ -66,7 +66,7 @@ export function createVertexAuthConfig(opts: VertexAuthOptions): NextAuthConfig 
         s.role = role as VtxRole;
         s.permissions = permissionsForRole(role);
         if (session.user) {
-          const su = session.user as Record<string, unknown>;
+          const su = session.user as unknown as Record<string, unknown>;
           su.tenantId = (token.tenant_id as string) ?? null;
           su.role = role;
         }
