@@ -6,7 +6,7 @@ import { cn } from '../lib/utils';
  * PageHeader — premium page title block (A3, S26).
  * Title + optional description + right-aligned actions slot. Presentational (no client).
  */
-export interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface PageHeaderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   title: React.ReactNode;
   description?: React.ReactNode;
   actions?: React.ReactNode;
