@@ -32,6 +32,7 @@ export const VTX_PERMISSIONS = [
   "users:manage", // invite users, assign roles (within tenant)
   "users:read", // view users of the tenant
   "agents:invoke", // run an agent pipeline (reactive)
+  "agents:invoke_restricted", // run an agent in restricted mode (quota+skill subset; domain EXTERNAL_ADVISOR). C1/R-VPCL-010.
   "agents:read", // view the agent catalog
   "audit:read", // read the SHA-256 audit chain (own tenant)
   "billing:read", // view usage / billing dashboards
@@ -55,6 +56,7 @@ export const ROLE_PERMISSIONS: Record<VtxRole, readonly VtxPermission[]> = {
     "users:manage",
     "users:read",
     "agents:invoke",
+    "agents:invoke_restricted",
     "agents:read",
     "audit:read",
     "billing:read",
@@ -66,12 +68,13 @@ export const ROLE_PERMISSIONS: Record<VtxRole, readonly VtxPermission[]> = {
   COMPLIANCE_OFFICER: [
     "users:read",
     "agents:invoke",
+    "agents:invoke_restricted",
     "agents:read",
     "audit:read",
     "compliance:review",
     "proactive:approve",
   ],
-  ADVISOR: ["agents:invoke", "agents:read", "audit:read", "billing:read"],
+  ADVISOR: ["agents:invoke", "agents:invoke_restricted", "agents:read", "audit:read", "billing:read"],
   AUDITOR: ["users:read", "agents:read", "audit:read", "billing:read", "compliance:review"],
   VIEWER: ["agents:read"],
 };
