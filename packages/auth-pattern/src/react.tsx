@@ -13,13 +13,13 @@
 
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 
-import type { VtxPermission, VtxRole } from "./roles";
+import type { AnyRole, VtxPermission } from "./roles";
 import type { VtxAuthSession } from "./types";
 
 interface VtxSessionContextValue {
   session: VtxAuthSession | null;
   hasPermission: (p: VtxPermission) => boolean;
-  hasRole: (r: VtxRole | VtxRole[]) => boolean;
+  hasRole: (r: AnyRole | AnyRole[]) => boolean;
 }
 
 const VtxSessionContext = createContext<VtxSessionContextValue | null>(null);
@@ -67,7 +67,7 @@ export function useHasPermission(permission: VtxPermission): boolean {
 }
 
 /** Reactive role check (single role or any-of list). */
-export function useHasRole(role: VtxRole | VtxRole[]): boolean {
+export function useHasRole(role: AnyRole | AnyRole[]): boolean {
   return useVtxSessionContext().hasRole(role);
 }
 
@@ -90,6 +90,6 @@ export function RoleGate({
   require: role,
   fallback = null,
   children,
-}: GateProps & { require: VtxRole | VtxRole[] }) {
+}: GateProps & { require: AnyRole | AnyRole[] }) {
   return useHasRole(role) ? <>{children}</> : <>{fallback}</>;
 }
