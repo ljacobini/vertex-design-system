@@ -208,7 +208,7 @@ export const PMI_ROLE_PERMISSIONS: Record<PmiRole, readonly VtxPermission[]> = {
     "billing:manage",
     "proactive:manage",
   ],
-  EXTERNAL_ADVISOR: ["agents:invoke_restricted", "agents:read", "audit:read"],
+  EXTERNAL_ADVISOR: ["agents:invoke", "agents:invoke_restricted", "agents:read", "audit:read"],
 };
 
 /** PMI role to tenant tier. EXTERNAL_ADVISOR = T2 cross-tenant (time-boxed). */
