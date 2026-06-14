@@ -1,105 +1,90 @@
 /**
- * @vertex/ui -- globals.css (Tailwind 4 migration Wave D S21)
+ * @vertex/ui -- globals.css (Tailwind 4)
  *
- * BREAKING CHANGE v0.3.0: Migrated from Tailwind 3 (@tailwind directives + @apply)
- * to Tailwind 4 (@import "tailwindcss" + CSS direct base styles).
+ * S38: Design language "Institutional Light · Investment-Bank" (variante A "JPMorgan classic").
+ * Palette derivata dal marchio Vertex 102 (navy #0A1A3F) + heading serif.
+ * Source of truth condivisa (Charter R2 consume-don't-fork): allineata 1:1 con
+ * saas-frontend/app/globals.css. Consumer apps importano via:  import "@vertex/ui/styles";
  *
- * Root cause migration (LL-S20-03): vds Tailwind 3 directives incompatibili con
- * saas-frontend Tailwind 4 -> 4 Render build attempts FAIL S20.
- *
- * Consumer apps import via:
- *   import "@vertex/ui/styles";
- *
- * Multi-tenant override pattern (ADR-001 + ADR-004):
- *   :root[data-tenant="banca-bionica"] { --primary: 217 91% 35%; }
- *   :root[data-tenant="vertex"]        { --primary: 222.2 47.4% 11.2%; }
- *
- * Pattern allineato a saas-frontend/app/globals.css (Tailwind 4 native, build PASS evidence).
+ * v0.3.0 ha migrato da Tailwind 3 a Tailwind 4 (@import "tailwindcss"). LL-S20-03 risolta.
  */
 
 @import "tailwindcss";
 
-/* shadcn default theme tokens (HSL format -- consumer can use hsl(var(--token)) or @theme inline) */
 :root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
+  --background: 220 18% 97%;
+  --foreground: 222 73% 14%;
   --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
+  --card-foreground: 222 73% 14%;
   --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-  --primary: 222.2 47.4% 11.2%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96.1%;
-  --secondary-foreground: 222.2 47.4% 11.2%;
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: 222.2 84% 4.9%;
-  --radius: 0.5rem;
+  --popover-foreground: 222 73% 14%;
+  --primary: 222 73% 14%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 214 40% 95%;
+  --secondary-foreground: 222 73% 14%;
+  --muted: 214 30% 96%;
+  --muted-foreground: 218 14% 41%;
+  --accent: 214 40% 95%;
+  --accent-foreground: 222 73% 14%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 218 16% 90%;
+  --input: 218 16% 90%;
+  --ring: 206 67% 34%;
+  --radius: 0.375rem;
+
+  /* VTX accent palette (institutional navy family) */
+  --vtx-deep: 222 73% 14%;  /* #0A1A3F -- primary CTA, marchio */
+  --vtx-mid: 206 67% 34%;   /* steel -- secondary, link, focus */
+  --vtx-light: 207 41% 51%;
+  --vtx-spark: 180 50% 63%;
+
+  /* Severity 5-level (banking compliance, 1:1 backend) */
+  --severity-info: 215 19% 35%;
+  --severity-warning: 28 90% 37%;
+  --severity-alert: 0 72% 51%;
+  --severity-breach: 15 75% 28%;
+  --severity-success: 142 72% 29%;
 }
 
 .dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 210 40% 98%;
-  --primary-foreground: 222.2 47.4% 11.2%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 212.7 26.8% 83.9%;
-}
-
-/* Vertex Platform Unified Design Language (S45 W2)
- * Source: vtx-pb-design-language SKILL.md canonical (V102PB)
- * Cross-modulo: Advisory + PB + futuri BB+CTG
- * D-FRONTEND-UNIFIED-MULTIMODULO-S44 implementation foundation
- */
-:root {
-  /* VTX accent palette (institutional banking blue family) */
-  --vtx-deep: 207 79% 21%; /* #0B3B5C -- primary CTA, header marks */
-  --vtx-mid: 207 67% 34%; /* #1E6091 -- secondary, link, focus ring */
-  --vtx-light: 207 41% 51%; /* #4A90B7 -- tertiary, badges */
-  --vtx-spark: 180 50% 63%; /* #6FD3D3 -- delight only, never compliance/finance */
-  /* Severity 5-level (banking compliance domain, 1:1 backend mapping) */
-  --severity-info: 215 16% 35%; /* slate-600 #475569 */
-  --severity-warning: 32 95% 44%; /* amber-600 #D97706 */
-  --severity-alert: 0 72% 51%; /* red-600 #DC2626 */
-  --severity-breach: 17 76% 28%; /* red-900 #7C2D12 -- never auto-hide */
-  --severity-success: 158 88% 25%; /* emerald-700 #047857 */
-}
-
-.dark {
-  --vtx-deep: 207 60% 45%;
-  --vtx-mid: 207 50% 55%;
+  --background: 222 47% 8%;
+  --foreground: 210 30% 96%;
+  --card: 222 44% 11%;
+  --card-foreground: 210 30% 96%;
+  --popover: 222 44% 11%;
+  --popover-foreground: 210 30% 96%;
+  --primary: 210 60% 75%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 217 33% 18%;
+  --secondary-foreground: 210 30% 96%;
+  --muted: 217 33% 18%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 217 33% 20%;
+  --accent-foreground: 210 30% 96%;
+  --destructive: 0 62% 45%;
+  --destructive-foreground: 210 30% 96%;
+  --border: 217 33% 20%;
+  --input: 217 33% 20%;
+  --ring: 206 60% 55%;
+  --vtx-deep: 210 60% 70%;
+  --vtx-mid: 206 50% 60%;
   --vtx-light: 207 40% 65%;
   --vtx-spark: 180 45% 70%;
-  --severity-info: 215 16% 65%;
+  --severity-info: 215 18% 65%;
   --severity-warning: 32 80% 55%;
   --severity-alert: 0 70% 60%;
   --severity-breach: 17 60% 50%;
-  --severity-success: 158 60% 55%;
+  --severity-success: 142 55% 55%;
 }
 
-/* @theme inline -- expose CSS vars as Tailwind 4 utility tokens
- * Allows consumer to use bg-background, text-foreground, border-border ecc.
- * Pattern canonical Tailwind 4: https://tailwindcss.com/docs/v4-beta#defining-custom-utilities
- */
+/* Multi-tenant brand override */
+[data-tenant="default"] { /* inherit :root */ }
+[data-tenant="mediolanum"] {
+  --primary: 215 80% 22%;
+  --ring: 215 70% 40%;
+}
+
 @theme inline {
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -120,13 +105,16 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
+  --color-severity-info: hsl(var(--severity-info));
+  --color-severity-warning: hsl(var(--severity-warning));
+  --color-severity-alert: hsl(var(--severity-alert));
+  --color-severity-breach: hsl(var(--severity-breach));
+  --color-severity-success: hsl(var(--severity-success));
   --radius: var(--radius);
+  --font-serif: var(--font-source-serif), Georgia, "Times New Roman", serif;
 }
 
-/* Base styles -- CSS direct (no @apply, no @layer base wrapper required in TW4) */
-* {
-  border-color: hsl(var(--border));
-}
+* { border-color: hsl(var(--border)); }
 
 body {
   background-color: hsl(var(--background));

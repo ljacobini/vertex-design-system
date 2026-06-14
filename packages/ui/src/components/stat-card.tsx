@@ -36,7 +36,7 @@ export interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
   ({ className, label, value, delta, trend = 'flat', severity, icon, hint, ...props }, ref) => (
-    <Card ref={ref} className={cn('overflow-hidden', className)} {...props}>
+    <Card ref={ref} className={cn('overflow-hidden border-t-2 border-t-primary', className)} {...props}>
       <CardContent className="p-5">
         <div className="flex items-start justify-between gap-3">
           <p className="text-sm font-medium text-muted-foreground">{label}</p>
