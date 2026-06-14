@@ -81,4 +81,8 @@ export {
   useHasRole,
   PermissionGate,
   RoleGate,
-} from "./r
+} from "./react";
+export type { VtxSessionProviderProps, GateProps } from "./react";
+
+// --- SDL client/KYC data contract (CONTRACT_VERSION 1.2.0, S26 SYNC-1) ---
+export * from "./sdl-client";
