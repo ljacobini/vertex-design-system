@@ -177,15 +177,69 @@ export function pbRoleHasPermission(role: PbRole, permission: VtxPermission): bo
 // ---------------------------------------------------------------------------
 
 /** Union of SAAS hub and PB domain role names. */
-export type AnyRole = VtxRole | PbRole;
+// ---------------------------------------------------------------------------
+// PMI domain role map (S40). PMI Advisory Direct (T1 channel SKIPPABLE).
+// Reuses shared VTX_PERMISSIONS. MIRRORED in rbac.py PMI_ROLE_PERMISSIONS.
+// Additive contract change -> CONTRACT_VERSION 1.3.0 -> 1.4.0.
+// ---------------------------------------------------------------------------
+
+/** PMI domain roles (4 new + reused PLATFORM_ADMIN). */
+export const PMI_ROLES = [
+  "PLATFORM_ADMIN",
+  "CFO",
+  "CONTROLLER_ANALYST",
+  "PMI_ADMIN",
+  "EXTERNAL_ADVISOR",
+] as const;
+
+export type PmiRole = (typeof PMI_ROLES)[number];
+
+/** PMI role to permission matrix. Reuses VTX_PERMISSIONS. Least-privilege. */
+export const PMI_ROLE_PERMISSIONS: Record<PmiRole, readonly VtxPermission[]> = {
+  PLATFORM_ADMIN: ALL,
+  CFO: ["agents:invoke", "agents:read", "audit:read", "billing:read", "users:read"],
+  CONTROLLER_ANALYST: ["agents:invoke", "agents:read", "audit:read"],
+  PMI_ADMIN: [
+    "users:manage",
+    "users:read",
+    "agents:read",
+    "audit:read",
+    "billing:read",
+    "billing:manage",
+    "proactive:manage",
+  ],
+  EXTERNAL_ADVISOR: ["agents:invoke_restricted", "agents:read", "audit:read"],
+};
+
+/** PMI role to tenant tier. EXTERNAL_ADVISOR = T2 cross-tenant (time-boxed). */
+export const PMI_ROLE_TIER: Record<PmiRole, "T0" | "T2" | "T4"> = {
+  PLATFORM_ADMIN: "T0",
+  CFO: "T4",
+  CONTROLLER_ANALYST: "T4",
+  PMI_ADMIN: "T2",
+  EXTERNAL_ADVISOR: "T2",
+};
+
+/** Type guard: is `value` a known PMI role? */
+export function isPmiRole(value: unknown): value is PmiRole {
+  return typeof value === "string" && (PMI_ROLES as readonly string[]).includes(value);
+}
+
+/** Does a PMI `role` hold `permission`? */
+export function pmiRoleHasPermission(role: PmiRole, permission: VtxPermission): boolean {
+  return PMI_ROLE_PERMISSIONS[role].includes(permission);
+}
+
+export type AnyRole = VtxRole | PbRole | PmiRole;
 
 /** Combined role→permission lookup (SAAS 6 + PB). Reused keys map to identical lists. */
 const ANY_ROLE_PERMISSIONS: Record<string, readonly VtxPermission[]> = {
   ...ROLE_PERMISSIONS,
   ...PB_ROLE_PERMISSIONS,
+  ...PMI_ROLE_PERMISSIONS,
 };
 
-const _ANY_ROLES: readonly string[] = [...new Set<string>([...VTX_ROLES, ...PB_ROLES])];
+const _ANY_ROLES: readonly string[] = [...new Set<string>([...VTX_ROLES, ...PB_ROLES, ...PMI_ROLES])];
 
 /** Is `value` a known role in any domain (SAAS or PB)? */
 export function isAnyRole(value: unknown): value is AnyRole {
@@ -204,5 +258,9 @@ export function anyRolePermissions(role: AnyRole): VtxPermission[] {
 
 /** Tenant tier (T0-T4 / RO) for a role, or null for SAAS roles without a tier. */
 export function tierForRole(role: AnyRole): string | null {
-  return (PB_ROLE_TIER as Record<string, string>)[role] ?? null;
+  return (
+    (PB_ROLE_TIER as Record<string, string>)[role] ??
+    (PMI_ROLE_TIER as Record<string, string>)[role] ??
+    null
+  );
 }
