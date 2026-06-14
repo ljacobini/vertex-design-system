@@ -6,7 +6,7 @@
  * RS256 via IdP in production) and consumed by Auth.js v5 callbacks.
  */
 
-import type { VtxPermission, VtxRole } from "./roles";
+import type { AnyRole, VtxPermission, VtxRole } from "./roles";
 
 /**
  * Canonical JWT claim set (the wire contract).
@@ -29,6 +29,10 @@ export interface VtxClaims {
   exp?: number;
   /** issuer */
   iss?: string;
+  /** PB-3: tenant tier T0-T4 (optional on wire; derived from role if absent) */
+  tier?: string;
+  /** PB-3: fine-grained agent-id scope (optional; enforced when SCOPE_AWARE_RBAC) */
+  scope?: string[] | string;
 }
 
 /** Resolved, app-facing session (role coerced, permissions expanded). */
@@ -36,8 +40,10 @@ export interface VtxAuthSession {
   userId: string;
   tenantId: string;
   email: string | null;
-  role: VtxRole;
+  role: AnyRole;
   permissions: VtxPermission[];
+  /** tenant tier T0-T4 / RO, or null for SAAS roles without a tier */
+  tier: string | null;
   /** expiry epoch seconds, or null if not present */
   exp: number | null;
 }

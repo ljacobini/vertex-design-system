@@ -6,7 +6,7 @@
  * Used by both the JWT verifier (jwt.ts) and the Auth.js session callback.
  */
 
-import { coerceRole, permissionsForRole } from "./roles";
+import { anyRolePermissions, coerceAnyRole, tierForRole } from "./roles";
 import type { VtxAuthSession, VtxClaims } from "./types";
 
 /** Claims that must be present for a usable session. */
@@ -22,13 +22,14 @@ export function missingRequiredClaims(claims: Partial<VtxClaims>): string[] {
 
 /** Build a resolved, app-facing session from verified claims. */
 export function sessionFromClaims(claims: VtxClaims): VtxAuthSession {
-  const role = coerceRole(claims.role);
+  const role = coerceAnyRole(claims.role);
   return {
     userId: claims.sub,
     tenantId: claims.tenant_id,
     email: claims.email ?? null,
     role,
-    permissions: permissionsForRole(role),
+    permissions: anyRolePermissions(role),
+    tier: typeof claims.tier === "string" && claims.tier ? claims.tier : tierForRole(role),
     exp: typeof claims.exp === "number" ? claims.exp : null,
   };
 }

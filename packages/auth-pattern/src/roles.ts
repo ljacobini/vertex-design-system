@@ -101,3 +101,108 @@ export function roleHasPermission(role: VtxRole, permission: VtxPermission): boo
 export function permissionsForRole(role: VtxRole): VtxPermission[] {
   return [...ROLE_PERMISSIONS[role]];
 }
+
+// ---------------------------------------------------------------------------
+// PB domain role map (T0-T4) — S39. Domains extend with their own role map but
+// REUSE the shared VTX_PERMISSIONS vocabulary above. Tier and data-scope are
+// orthogonal (carried as JWT claims tier_level / tenant_chain / scope), NOT
+// permissions. MIRRORED in vertex_agent_platform/rbac.py PB_ROLE_PERMISSIONS.
+// Additive contract change → CONTRACT_VERSION 1.2.0 → 1.3.0.
+// ---------------------------------------------------------------------------
+
+/** PB domain roles (commercial line Area→District→Branch→PB + control functions). */
+export const PB_ROLES = [
+  "PLATFORM_ADMIN",
+  "BANK_ADMIN",
+  "COMPLIANCE_OFFICER",
+  "RISK_OFFICER",
+  "AREA_MANAGER",
+  "DISTRICT_MANAGER",
+  "BRANCH_MANAGER",
+  "PRIVATE_BANKER",
+  "AUDITOR",
+] as const;
+
+export type PbRole = (typeof PB_ROLES)[number];
+
+/** PB role → permission matrix. Reuses VTX_PERMISSIONS. Least-privilege per tier. */
+export const PB_ROLE_PERMISSIONS: Record<PbRole, readonly VtxPermission[]> = {
+  PLATFORM_ADMIN: ALL,
+  BANK_ADMIN: [
+    "tenants:manage",
+    "users:manage",
+    "users:read",
+    "agents:read",
+    "audit:read",
+    "billing:read",
+    "billing:manage",
+    "proactive:manage",
+  ],
+  COMPLIANCE_OFFICER: ROLE_PERMISSIONS.COMPLIANCE_OFFICER,
+  RISK_OFFICER: ["users:read", "agents:invoke", "agents:read", "audit:read", "compliance:review"],
+  AREA_MANAGER: ["users:read", "agents:invoke", "agents:read", "audit:read", "billing:read", "proactive:approve"],
+  DISTRICT_MANAGER: ["users:read", "agents:invoke", "agents:read", "audit:read"],
+  BRANCH_MANAGER: ["users:read", "agents:invoke", "agents:read", "audit:read"],
+  PRIVATE_BANKER: ["agents:invoke", "agents:invoke_restricted", "agents:read", "audit:read"],
+  AUDITOR: ROLE_PERMISSIONS.AUDITOR,
+};
+
+/** PB role → tenant tier (T0-T4 / RO). Orthogonal to permissions. */
+export const PB_ROLE_TIER: Record<PbRole, "T0" | "T1" | "T2" | "T3" | "T4" | "RO"> = {
+  PLATFORM_ADMIN: "T0",
+  BANK_ADMIN: "T1",
+  COMPLIANCE_OFFICER: "T1",
+  RISK_OFFICER: "T1",
+  AREA_MANAGER: "T2",
+  DISTRICT_MANAGER: "T3",
+  BRANCH_MANAGER: "T3",
+  PRIVATE_BANKER: "T4",
+  AUDITOR: "RO",
+};
+
+/** Type guard: is `value` a known PB role? */
+export function isPbRole(value: unknown): value is PbRole {
+  return typeof value === "string" && (PB_ROLES as readonly string[]).includes(value);
+}
+
+/** Does a PB `role` hold `permission`? */
+export function pbRoleHasPermission(role: PbRole, permission: VtxPermission): boolean {
+  return PB_ROLE_PERMISSIONS[role].includes(permission);
+}
+
+// ---------------------------------------------------------------------------
+// Cross-domain resolution (SAAS hub + PB) — S39 PB-4. Used by the cockpit
+// session resolver so PB roles resolve permissions + tier (else they would
+// coerce to VIEWER via the SAAS-only coerceRole).
+// ---------------------------------------------------------------------------
+
+/** Union of SAAS hub and PB domain role names. */
+export type AnyRole = VtxRole | PbRole;
+
+/** Combined role→permission lookup (SAAS 6 + PB). Reused keys map to identical lists. */
+const ANY_ROLE_PERMISSIONS: Record<string, readonly VtxPermission[]> = {
+  ...ROLE_PERMISSIONS,
+  ...PB_ROLE_PERMISSIONS,
+};
+
+const _ANY_ROLES: readonly string[] = [...new Set<string>([...VTX_ROLES, ...PB_ROLES])];
+
+/** Is `value` a known role in any domain (SAAS or PB)? */
+export function isAnyRole(value: unknown): value is AnyRole {
+  return typeof value === "string" && _ANY_ROLES.includes(value);
+}
+
+/** Normalize a claim to any known role (SAAS or PB); fallback DEFAULT_ROLE. */
+export function coerceAnyRole(value: unknown): AnyRole {
+  return isAnyRole(value) ? (value as AnyRole) : DEFAULT_ROLE;
+}
+
+/** Permission set for any role (SAAS or PB) — array copy. */
+export function anyRolePermissions(role: AnyRole): VtxPermission[] {
+  return [...(ANY_ROLE_PERMISSIONS[role] ?? ROLE_PERMISSIONS[DEFAULT_ROLE])];
+}
+
+/** Tenant tier (T0-T4 / RO) for a role, or null for SAAS roles without a tier. */
+export function tierForRole(role: AnyRole): string | null {
+  return (PB_ROLE_TIER as Record<string, string>)[role] ?? null;
+}

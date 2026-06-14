@@ -32,8 +32,17 @@ export {
   coerceRole,
   roleHasPermission,
   permissionsForRole,
+  PB_ROLES,
+  PB_ROLE_PERMISSIONS,
+  PB_ROLE_TIER,
+  isPbRole,
+  pbRoleHasPermission,
+  isAnyRole,
+  coerceAnyRole,
+  anyRolePermissions,
+  tierForRole,
 } from "./roles";
-export type { VtxRole, VtxPermission } from "./roles";
+export type { VtxRole, VtxPermission, PbRole, AnyRole } from "./roles";
 
 // --- types ---
 export type {
@@ -72,8 +81,4 @@ export {
   useHasRole,
   PermissionGate,
   RoleGate,
-} from "./react";
-export type { VtxSessionProviderProps, GateProps } from "./react";
-
-// --- SDL client/KYC data contract (CONTRACT_VERSION 1.2.0, S26 SYNC-1) ---
-export * from "./sdl-client";
+} from "./r
