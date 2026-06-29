@@ -20,7 +20,7 @@
  *      02_Shared_Kernel/SDL_Orchestrator_AgentRegistry_Contract.
  */
 
-export const VTX_AUTH_PATTERN_VERSION = "1.0.0";
+export const VTX_AUTH_PATTERN_VERSION = "1.1.0";
 
 // --- contract core ---
 export {
@@ -64,6 +64,7 @@ export {
 export {
   verifyVtxToken,
   verifyVtxTokenWithKey,
+  verifyVtxTokenDual,
   decodeVtxTokenUnsafe,
   signVtxDevToken,
 } from "./jwt";

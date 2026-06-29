@@ -12,7 +12,7 @@
  * only from server contexts (middleware, route handlers, server components).
  */
 
-import { jwtVerify, SignJWT, type JWTPayload } from "jose";
+import { jwtVerify, SignJWT, importSPKI, decodeProtectedHeader, type JWTPayload } from "jose";
 
 import { sessionFromClaims, missingRequiredClaims } from "./session";
 import type { VtxClaims, VtxVerifyResult } from "./types";
@@ -51,6 +51,55 @@ export async function verifyVtxTokenWithKey(
     return { ok: false, reason: "missing_token", message: "Bearer token assente." };
   }
   return verifyWith(token, key, algorithms);
+}
+
+/**
+ * Dual-verify (S73 Fase1): accetta SIA HS256 (pilota, segreto condiviso) SIA RS256
+ * (target, chiave pubblica statica SPKI PEM). Instrada in base all'header `alg`.
+ * Nessun fetch di rete: la pubblica arriva via env, quindi e' stabile anche nel
+ * runtime edge del middleware Next.
+ *
+ * @param token raw JWT (senza prefisso "Bearer ")
+ * @param opts  secret = segreto HS256 (pilota); rs256PublicKeyPem = pubblica RS256 PEM
+ */
+export async function verifyVtxTokenDual(
+  token: string,
+  opts: { secret?: string; rs256PublicKeyPem?: string },
+): Promise<VtxVerifyResult> {
+  if (!token) {
+    return { ok: false, reason: "missing_token", message: "Bearer token assente." };
+  }
+  let alg: string | undefined;
+  try {
+    alg = decodeProtectedHeader(token).alg;
+  } catch {
+    return { ok: false, reason: "token_invalid", message: "Header JWT non valido." };
+  }
+  if (alg === "RS256") {
+    const pem = opts.rs256PublicKeyPem?.trim();
+    if (!pem) {
+      return {
+        ok: false,
+        reason: "token_invalid",
+        message: "Token RS256 ma nessuna chiave pubblica configurata.",
+      };
+    }
+    let key: Awaited<ReturnType<typeof importSPKI>>;
+    try {
+      key = await importSPKI(pem, "RS256");
+    } catch {
+      return { ok: false, reason: "token_invalid", message: "Chiave pubblica RS256 non valida." };
+    }
+    return verifyVtxTokenWithKey(
+      token,
+      key as unknown as Parameters<typeof jwtVerify>[1],
+      ["RS256"],
+    );
+  }
+  if (!opts.secret) {
+    return { ok: false, reason: "token_invalid", message: "Segreto HS256 non configurato." };
+  }
+  return verifyVtxToken(token, opts.secret);
 }
 
 async function verifyWith(
