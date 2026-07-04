@@ -64,7 +64,7 @@ export async function verifyVtxTokenWithKey(
  */
 export async function verifyVtxTokenDual(
   token: string,
-  opts: { secret?: string; rs256PublicKeyPem?: string },
+  opts: { secret?: string; rs256PublicKeyPem?: string; allowHs256?: boolean },
 ): Promise<VtxVerifyResult> {
   if (!token) {
     return { ok: false, reason: "missing_token", message: "Bearer token assente." };
@@ -95,6 +95,9 @@ export async function verifyVtxTokenDual(
       key as unknown as Parameters<typeof jwtVerify>[1],
       ["RS256"],
     );
+  }
+  if (!opts.allowHs256) {
+    return { ok: false, reason: "token_invalid", message: "HS256 disabilitato (Step D): solo RS256." };
   }
   if (!opts.secret) {
     return { ok: false, reason: "token_invalid", message: "Segreto HS256 non configurato." };
