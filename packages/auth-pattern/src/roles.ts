@@ -40,6 +40,11 @@ export const VTX_PERMISSIONS = [
   "compliance:review", // compliance oversight actions
   "proactive:manage", // configure scheduled / proactive agent runs
   "proactive:approve", // approve a human-gate (inderogabile)
+  // Firma umana MiFID II Art.25 di una proposta cliente del Client Orchestrator (es.
+  // ribilanciamento). DISTINTA da `proactive:approve` (approvazione di una run autonoma
+  // di agenti, atto amministrativo): la firma della proposta e' l'atto del BANKER che
+  // gestisce la relazione col cliente. Vedi pb_client_actions_routes.
+  "client_actions:approve",
 ] as const;
 
 export type VtxPermission = (typeof VTX_PERMISSIONS)[number];
@@ -64,6 +69,7 @@ export const ROLE_PERMISSIONS: Record<VtxRole, readonly VtxPermission[]> = {
     "compliance:review",
     "proactive:manage",
     "proactive:approve",
+    "client_actions:approve",
   ],
   COMPLIANCE_OFFICER: [
     "users:read",
@@ -73,6 +79,7 @@ export const ROLE_PERMISSIONS: Record<VtxRole, readonly VtxPermission[]> = {
     "audit:read",
     "compliance:review",
     "proactive:approve",
+    "client_actions:approve",
   ],
   ADVISOR: ["agents:invoke", "agents:invoke_restricted", "agents:read", "audit:read", "billing:read"],
   AUDITOR: ["users:read", "agents:read", "audit:read", "billing:read", "compliance:review"],
@@ -140,10 +147,24 @@ export const PB_ROLE_PERMISSIONS: Record<PbRole, readonly VtxPermission[]> = {
   ],
   COMPLIANCE_OFFICER: ROLE_PERMISSIONS.COMPLIANCE_OFFICER,
   RISK_OFFICER: ["users:read", "agents:invoke", "agents:read", "audit:read", "compliance:review"],
-  AREA_MANAGER: ["users:read", "agents:invoke", "agents:read", "audit:read", "billing:read", "proactive:approve"],
+  AREA_MANAGER: [
+    "users:read",
+    "agents:invoke",
+    "agents:read",
+    "audit:read",
+    "billing:read",
+    "proactive:approve",
+    "client_actions:approve",
+  ],
   DISTRICT_MANAGER: ["users:read", "agents:invoke", "agents:read", "audit:read"],
   BRANCH_MANAGER: ["users:read", "agents:invoke", "agents:read", "audit:read"],
-  PRIVATE_BANKER: ["agents:invoke", "agents:invoke_restricted", "agents:read", "audit:read"],
+  PRIVATE_BANKER: [
+    "agents:invoke",
+    "agents:invoke_restricted",
+    "agents:read",
+    "audit:read",
+    "client_actions:approve",
+  ],
   AUDITOR: ROLE_PERMISSIONS.AUDITOR,
 };
 
