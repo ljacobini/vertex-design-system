@@ -45,6 +45,13 @@ export const VTX_PERMISSIONS = [
   // di agenti, atto amministrativo): la firma della proposta e' l'atto del BANKER che
   // gestisce la relazione col cliente. Vedi pb_client_actions_routes.
   "client_actions:approve",
+  // [X-WHO.W1] Vedere le run proattive DI RETE, cioe' quelle calcolate sull'intera banca
+  // invece che sul book di una persona. Non e' `agents:read` (che ce l'hanno tutti,
+  // banker compresi): la vista di rete e' un'ECCEZIONE, e un'eccezione ha bisogno di un
+  // nome proprio. Deliberatamente NEGATO ai ruoli con gerarchia territoriale
+  // (area/distretto/filiale): la carta di rete aggrega per desk, cioe' per banker, e
+  // altrove il prodotto sopprime quegli aggregati sotto la soglia small-cell.
+  "proactive:read_network",
 ] as const;
 
 export type VtxPermission = (typeof VTX_PERMISSIONS)[number];
@@ -69,6 +76,7 @@ export const ROLE_PERMISSIONS: Record<VtxRole, readonly VtxPermission[]> = {
     "compliance:review",
     "proactive:manage",
     "proactive:approve",
+    "proactive:read_network",
     "client_actions:approve",
   ],
   COMPLIANCE_OFFICER: [
@@ -79,10 +87,18 @@ export const ROLE_PERMISSIONS: Record<VtxRole, readonly VtxPermission[]> = {
     "audit:read",
     "compliance:review",
     "proactive:approve",
+    "proactive:read_network",
     "client_actions:approve",
   ],
   ADVISOR: ["agents:invoke", "agents:invoke_restricted", "agents:read", "audit:read", "billing:read"],
-  AUDITOR: ["users:read", "agents:read", "audit:read", "billing:read", "compliance:review"],
+  AUDITOR: [
+    "users:read",
+    "agents:read",
+    "audit:read",
+    "billing:read",
+    "compliance:review",
+    "proactive:read_network",
+  ],
   VIEWER: ["agents:read"],
 };
 
@@ -144,9 +160,17 @@ export const PB_ROLE_PERMISSIONS: Record<PbRole, readonly VtxPermission[]> = {
     "billing:read",
     "billing:manage",
     "proactive:manage",
+    "proactive:read_network",
   ],
   COMPLIANCE_OFFICER: ROLE_PERMISSIONS.COMPLIANCE_OFFICER,
-  RISK_OFFICER: ["users:read", "agents:invoke", "agents:read", "audit:read", "compliance:review"],
+  RISK_OFFICER: [
+    "users:read",
+    "agents:invoke",
+    "agents:read",
+    "audit:read",
+    "compliance:review",
+    "proactive:read_network",
+  ],
   AREA_MANAGER: [
     "users:read",
     "agents:invoke",
