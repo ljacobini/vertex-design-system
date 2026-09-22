@@ -77,7 +77,9 @@ export const ROLE_PERMISSIONS: Record<VtxRole, readonly VtxPermission[]> = {
     "proactive:manage",
     "proactive:approve",
     "proactive:read_network",
-    "client_actions:approve",
+    // [X-DOOR.2, 22.09.26] client_actions:approve TOLTO: la firma MiFID Art.25 di una
+    // proposta cliente e' del SOLO banker del cliente (decisione CEO del 22.09.26). L'admin
+    // non firma: PB lo negherebbe comunque, e la matrice direbbe il falso.
   ],
   COMPLIANCE_OFFICER: [
     "users:read",
@@ -88,7 +90,8 @@ export const ROLE_PERMISSIONS: Record<VtxRole, readonly VtxPermission[]> = {
     "compliance:review",
     "proactive:approve",
     "proactive:read_network",
-    "client_actions:approve",
+    // [X-DOOR.2, 22.09.26] client_actions:approve TOLTO: la compliance controlla, non firma
+    // al posto del banker del cliente (decisione CEO del 22.09.26).
   ],
   ADVISOR: ["agents:invoke", "agents:invoke_restricted", "agents:read", "audit:read", "billing:read"],
   AUDITOR: [
@@ -180,8 +183,12 @@ export const PB_ROLE_PERMISSIONS: Record<PbRole, readonly VtxPermission[]> = {
     "proactive:approve",
     "client_actions:approve",
   ],
-  DISTRICT_MANAGER: ["users:read", "agents:invoke", "agents:read", "audit:read"],
-  BRANCH_MANAGER: ["users:read", "agents:invoke", "agents:read", "audit:read"],
+  // [X-DOOR.2, 22.09.26] I manager di distretto e di filiale possono avere un book proprio
+  // (seed_book_manager_sim: la filiale di Milano ne ha uno) e ne firmano le proposte come ogni
+  // banker. Senza il permesso quel book restava senza firmatario. PB li restringe comunque ai
+  // SOLI clienti del proprio book: il permesso apre la porta, non il perimetro.
+  DISTRICT_MANAGER: ["users:read", "agents:invoke", "agents:read", "audit:read", "client_actions:approve"],
+  BRANCH_MANAGER: ["users:read", "agents:invoke", "agents:read", "audit:read", "client_actions:approve"],
   PRIVATE_BANKER: [
     "agents:invoke",
     "agents:invoke_restricted",
